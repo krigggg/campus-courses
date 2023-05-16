@@ -1,6 +1,7 @@
 import { useLoginUserMutation } from "@/services/user/userApi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Card, Input, Typography } from "@material-tailwind/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -83,12 +84,12 @@ const Login = () => {
         </Button>
         <Typography color="gray" className="mt-4 text-center font-normal">
           Don&apos;t have an account?{" "}
-          <a
-            href="#"
+          <Link
+            href="/register"
             className="font-medium text-blue-500 transition-colors hover:text-blue-700"
           >
             Sign up
-          </a>
+          </Link>
         </Typography>
       </form>
     </Card>
