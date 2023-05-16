@@ -1,13 +1,25 @@
 import { useGetAllGroupsQuery } from "@/services/group/groupApi";
 import { Button, List, ListItem } from "@material-tailwind/react";
+import { useRouter } from "next/router";
 
 const Groups = () => {
   const { data } = useGetAllGroupsQuery();
-
+  const { push } = useRouter();
   return (
     <List>
       {data?.map((group, index) => (
-        <ListItem key={index} className="border">
+        <ListItem
+          key={index}
+          className="border"
+          onClick={() =>
+            push({
+              pathname: `/groups/${group.id}`,
+              query: {
+                groupName: group.name,
+              },
+            })
+          }
+        >
           <div className="flex items-center justify-between w-full">
             <span>{group.name}</span>
             <div className="flex gap-2">
