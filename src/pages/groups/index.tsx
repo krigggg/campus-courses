@@ -4,6 +4,7 @@ import {
   useDeleteGroupMutation,
   useGetAllGroupsQuery,
 } from "@/services/group/groupApi";
+import { useGetUserRolesQuery } from "@/services/user/userApi";
 import { Button, List, ListItem } from "@material-tailwind/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -15,22 +16,25 @@ const Groups = () => {
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [deleteGroup] = useDeleteGroupMutation();
+  const roles = useGetUserRolesQuery().data;
 
   const handleOpenCreate = () => setOpenCreate(!openCreate);
   const handleOpenEdit = () => setOpenEdit(!openEdit);
 
   return (
     <>
-      <Button onClick={handleOpenCreate} className="my-4">
-        Create
-      </Button>
+      {!!roles?.isAdmin && (
+        <Button onClick={handleOpenCreate} className="mt-4">
+          Create
+        </Button>
+      )}
       <CreateGroupModal open={openCreate} handleOpen={handleOpenCreate} />
       <EditGroupModal
         groupId={editId}
         open={openEdit}
         handleOpen={handleOpenEdit}
       />
-      <List className="p-0">
+      <List className="p-0 mt-4">
         {data?.map((group, index) => (
           <ListItem
             key={index}
@@ -46,23 +50,28 @@ const Groups = () => {
           >
             <div className="flex items-center justify-between w-full">
               <span>{group.name}</span>
-              <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                <Button
-                  onClick={() => {
-                    setEditId(group.id);
-                    handleOpenEdit();
-                  }}
-                  className="bg-amber-600 shadow-amber-600/20 hover:shadow-amber-600/60 text-white font-bold rounded-md py-3 px-6 w-24"
+              {!!roles?.isAdmin && (
+                <div
+                  className="flex gap-2"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  Edit
-                </Button>
-                <Button
-                  onClick={() => deleteGroup(group.id)}
-                  className="bg-red-500 shadow-red-500/20  hover:shadow-red-500/40 text-white font-bold rounded-md p-3 py-3 px-6 w-24"
-                >
-                  Delete
-                </Button>
-              </div>
+                  <Button
+                    onClick={() => {
+                      setEditId(group.id);
+                      handleOpenEdit();
+                    }}
+                    className="bg-amber-600 shadow-amber-600/20 hover:shadow-amber-600/60 text-white font-bold rounded-md py-3 px-6 w-24"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={() => deleteGroup(group.id)}
+                    className="bg-red-500 shadow-red-500/20  hover:shadow-red-500/40 text-white font-bold rounded-md p-3 py-3 px-6 w-24"
+                  >
+                    Delete
+                  </Button>
+                </div>
+              )}
             </div>
           </ListItem>
         ))}
