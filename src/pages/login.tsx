@@ -9,13 +9,7 @@ import * as yup from "yup";
 
 const schema = yup.object({
   email: yup.string().email(),
-  password: yup
-    .string()
-    .required()
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
-      "Must Contain 8 Characters, One Uppercase, One Lowercase and One Number"
-    ),
+  password: yup.string().required(),
 });
 
 type SignInRequest = {
