@@ -1,3 +1,4 @@
+import { ProfileRequest } from '@/pages/profile';
 import { splitApi } from '../splitApi';
 import { IUser, Login, Profile, Registration, RolesList } from './type';
 
@@ -6,6 +7,16 @@ export const accountApi = splitApi.injectEndpoints({
       getUserProfile: build.query<Profile, string | void>({
         query: () => '/profile',
         providesTags: ["Profile"]
+      }),
+      editUserProfile: build.mutation<Profile, ProfileRequest>({
+        query: (body) => {
+          return {
+            url: '/profile',
+            method: "PUT",
+            body
+          }
+        },
+        invalidatesTags: ["Profile"]
       }),
       registerUser: build.mutation<{token: string}, Registration>({
         query(body: Registration) {
@@ -63,6 +74,7 @@ export const accountApi = splitApi.injectEndpoints({
     
   export const { 
     useGetUserProfileQuery, 
+    useEditUserProfileMutation,
     useRegisterUserMutation, 
     useLoginUserMutation, 
     useLogoutUserMutation, 
