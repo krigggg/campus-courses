@@ -4,7 +4,8 @@ import {
   statusConvertions,
 } from "@/helpers/courseConverters";
 import { Course } from "@/services/course/type";
-import { List, ListItem, Typography } from "@material-tailwind/react";
+import { useGetUserRolesQuery } from "@/services/user/userApi";
+import { Button, List, ListItem, Typography } from "@material-tailwind/react";
 import { useRouter } from "next/router";
 import { FC } from "react";
 
@@ -15,8 +16,10 @@ type CourseListProps = {
 
 const CourseList: FC<CourseListProps> = ({ groupName, data }) => {
   const router = useRouter();
+  const roles = useGetUserRolesQuery().data;
   return (
     <>
+      {!!roles?.isAdmin && <Button>Создать курс</Button>}
       <Typography variant="h2" className="my-2">
         {groupName}
       </Typography>
