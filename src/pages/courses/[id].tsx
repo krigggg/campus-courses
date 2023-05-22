@@ -133,13 +133,15 @@ const DetailedCourse = () => {
         requirements={data?.requirements || ""}
         annotations={data?.annotations || ""}
       />
-      <EditMarkModal
-        studentId={studentId}
-        markType={markType}
-        courseId={typeof query.id === "string" ? query.id : ""}
-        open={openMark}
-        handleOpen={handleOpenMark}
-      />
+      {!!(roles?.isAdmin || isTeacher) && (
+        <EditMarkModal
+          studentId={studentId}
+          markType={markType}
+          courseId={typeof query.id === "string" ? query.id : ""}
+          open={openMark}
+          handleOpen={handleOpenMark}
+        />
+      )}
       <Typography variant="h2">{data?.name}</Typography>
       <div className="flex items-center justify-between">
         <Typography variant="h5" className="mt-4">
@@ -671,5 +673,3 @@ const DetailedCourse = () => {
 };
 
 export default DetailedCourse;
-
-// 3f765b32-a116-4c7b-9cd6-08db36655299
