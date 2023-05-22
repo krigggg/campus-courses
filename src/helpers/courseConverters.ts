@@ -12,4 +12,28 @@ export const statusConvertions = {
     Finished: "Закрыт",
   };
 
+export const MarkConvertions = {
+  Passed: "успешно пройдена",
+  Failed: "зафейлена",
+  NotDefined: "отметки нет"
+}
+
+export const MarkColor = {
+  Passed: "green",
+  Failed: "red",
+  NotDefined: "gray"
+}
+
+export const StudentStatusConvertions = {
+  InQueue: "в очереди",
+  Accepted: "принят в группу",
+  Declined: "отклонен"
+}
+
+export const StudentStatusColor = {
+  InQueue: "text-blue-400",
+  Accepted: "text-green-400",
+  Declined: "text-red-400"
+}
+
 export const convertSemester = (current: string) => current === "Autumn" ? "Осенний" : "Весенний";

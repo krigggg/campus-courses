@@ -26,6 +26,15 @@ export const accountApi = splitApi.injectEndpoints({
               body,
           }
         },
+        async onQueryStarted(_, { dispatch, queryFulfilled }) {
+          try {
+            const { data } = await queryFulfilled;
+            localStorage.setItem("token", data.token);
+            dispatch(splitApi.util.invalidateTags(["Profile", "Roles"]));
+          } catch (err) {
+            console.log(err);
+          }
+        },
       }),
       loginUser: build.mutation<{ token: string }, Login>({
         query(body: Login) {
@@ -39,7 +48,7 @@ export const accountApi = splitApi.injectEndpoints({
           try {
             const { data } = await queryFulfilled;
             localStorage.setItem("token", data.token);
-            dispatch(splitApi.util.invalidateTags(["Profile"]));
+            dispatch(splitApi.util.invalidateTags(["Profile", "Roles"]));
           } catch (err) {
             console.log(err);
           }
@@ -64,6 +73,7 @@ export const accountApi = splitApi.injectEndpoints({
       }),
       getUserRoles: build.query<RolesList, void>({
         query: () => "/roles",
+        providesTags: ["Roles"]
       }),
       getAllUsers: build.query<IUser[], void>({
         query: () => "/users"

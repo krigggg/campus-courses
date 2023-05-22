@@ -1,4 +1,4 @@
-type CourseStatus = "Created" | "OpenForAssigning" | "Started" | "Finished";
+export type CourseStatus = "Created" | "OpenForAssigning" | "Started" | "Finished";
 
 type Semester = "Spring" | "Autumn"
 

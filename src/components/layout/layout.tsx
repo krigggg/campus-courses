@@ -1,6 +1,7 @@
 import { splitApi } from "@/services/splitApi";
 import {
   useGetUserProfileQuery,
+  useGetUserRolesQuery,
   useLogoutUserMutation,
 } from "@/services/user/userApi";
 import { Button, Navbar, Typography } from "@material-tailwind/react";
@@ -14,6 +15,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const dispatch = useDispatch();
   const { data } = useGetUserProfileQuery();
   const [logout] = useLogoutUserMutation();
+  const roles = useGetUserRolesQuery().data;
 
   const handleLogoutClick = async () => {
     try {
@@ -40,7 +42,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
               <Link href="/">Campus courses</Link>
             </Typography>
             <div className="ml-8">
-              <NavList />
+              <NavList roles={roles} />
             </div>
           </div>
           <div className="flex items-center gap-4">

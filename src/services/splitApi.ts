@@ -13,6 +13,6 @@ export const splitApi = createApi({
     
         return headers;
       }}),
-    tagTypes: ['Profile', 'Groups', 'Courses', 'MyCourses', 'TeachingCourses', 'CoursesDetails'],
+    tagTypes: ['Profile', 'Roles', 'Groups', 'Courses', 'MyCourses', 'TeachingCourses', 'CoursesDetails'],
   endpoints: () => ({}),
 })

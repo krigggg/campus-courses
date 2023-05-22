@@ -19,7 +19,7 @@ const CourseList: FC<CourseListProps> = ({ groupName, data }) => {
   const roles = useGetUserRolesQuery().data;
   return (
     <>
-      {!!roles?.isAdmin && <Button>Создать курс</Button>}
+      {!!roles?.isAdmin && <Button className="mt-4">Создать курс</Button>}
       <Typography variant="h2" className="my-2">
         {groupName}
       </Typography>
