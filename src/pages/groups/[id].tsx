@@ -9,6 +9,7 @@ const GroupCourses = () => {
 
   return (
     <CourseList
+      groupId={groupId}
       groupName={typeof query.groupName === "string" ? query.groupName : ""}
       data={data}
     />

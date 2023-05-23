@@ -1,4 +1,5 @@
-import { useEditCourseDataMutation } from "@/services/course/courseApi";
+import { useAddCourseMutation } from "@/services/course/courseApi";
+import { useGetAllUsersQuery } from "@/services/user/userApi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
@@ -7,6 +8,8 @@ import {
   CardFooter,
   CardHeader,
   Dialog,
+  Input,
+  Radio,
   Typography,
 } from "@material-tailwind/react";
 import { FC, useEffect, useRef, useState } from "react";
@@ -15,46 +18,51 @@ import toast from "react-hot-toast";
 import * as yup from "yup";
 
 const schema = yup.object({
+  name: yup.string().required(),
+  startYear: yup.string().required(),
+  maximumStudentsCount: yup.string().required(),
   requirements: yup.string(),
   annotations: yup.string(),
+  semester: yup.string().required(),
+  mainTeacherId: yup.string().required(),
 });
 
 type ChangeCourseModalProps = {
-  courseId: string;
-  requirements: string;
-  annotations: string;
+  groupId: string;
   open: boolean;
   handleOpen: any;
 };
 
-type ChangeCourseRequest = {
+type AddCourseRequest = {
+  groupId: string;
+  name: string;
+  startYear: string;
+  maximumStudentsCount: string;
   annotations: string;
   requirements: string;
+  semester: string;
+  mainTeacherId: string;
 };
 
-const ChangeCourseModal: FC<ChangeCourseModalProps> = ({
-  requirements,
-  annotations,
-  courseId,
+const AddCourseModal: FC<ChangeCourseModalProps> = ({
+  groupId,
   open,
   handleOpen,
 }) => {
   const {
     handleSubmit,
+    register,
     control,
     formState: { errors },
-  } = useForm<ChangeCourseRequest>({
+  } = useForm<AddCourseRequest>({
     resolver: yupResolver(schema),
-    defaultValues: {
-      annotations: annotations,
-      requirements: requirements,
-    },
   });
   const editorRef: any = useRef();
   const { CKEditor, ClassicEditor } = editorRef.current || {};
   const [editorLoaded, setEditorLoaded] = useState(false);
-  const [requirementsData, setRequirementsData] = useState(requirements);
-  const [annotationsData, setAnnotationsData] = useState(annotations);
+  const [requirementsData, setRequirementsData] = useState("");
+  const [annotationsData, setAnnotationsData] = useState("");
+  const users = useGetAllUsersQuery().data;
 
   useEffect(() => {
     editorRef.current = {
@@ -65,20 +73,12 @@ const ChangeCourseModal: FC<ChangeCourseModalProps> = ({
     if (typeof window !== "undefined") setEditorLoaded(true);
   }, []);
 
-  useEffect(() => {
-    setRequirementsData(requirements), setAnnotationsData(annotations);
-  }, [requirements, annotations]);
-
-  const [editCourse] = useEditCourseDataMutation();
-  const onSubmit: SubmitHandler<ChangeCourseRequest> = async (data) => {
+  const [addCourse] = useAddCourseMutation();
+  const onSubmit: SubmitHandler<AddCourseRequest> = async (data) => {
     console.log(data);
     try {
-      await editCourse({
-        courseId,
-        requirements: requirementsData,
-        annotations: annotationsData,
-      }).unwrap();
-      toast.success("Course has been changed");
+      await addCourse({ ...data, groupId: groupId }).unwrap();
+      toast.success("Course has been added");
     } catch (err: any) {
       if (err?.data?.message) {
         toast.error(err.data.message);
@@ -112,6 +112,20 @@ const ChangeCourseModal: FC<ChangeCourseModalProps> = ({
       </Card>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardBody>
+          <Input label="Course name" {...register("name")} />
+          <div className="mt-4">
+            <Input label="Start year" {...register("startYear")} />
+          </div>
+          <div className="mt-4">
+            <Input
+              label="Max students count"
+              {...register("maximumStudentsCount")}
+            />
+          </div>
+          <div className="mt-4">
+            <Radio label="Осенний" value="Autumn" {...register("semester")} />
+            <Radio {...register("semester")} label="Весенний" value="Spring" />
+          </div>
           <Controller
             name="requirements"
             control={control}
@@ -152,6 +166,16 @@ const ChangeCourseModal: FC<ChangeCourseModalProps> = ({
               </>
             )}
           />
+          <select
+            className="mt-4 p-2 font-montserrat border-2 border-slate-200 rounded-md border-solid"
+            {...register("mainTeacherId")}
+          >
+            {users?.map((user: User) => (
+              <option key={user.id} value={user.id}>
+                {user.fullName}
+              </option>
+            ))}
+          </select>
         </CardBody>
         <CardFooter>
           <Button
@@ -168,7 +192,7 @@ const ChangeCourseModal: FC<ChangeCourseModalProps> = ({
             color="green"
             onClick={handleOpen}
           >
-            <span>Change</span>
+            <span>Add</span>
           </Button>
         </CardFooter>
       </form>
@@ -176,4 +200,4 @@ const ChangeCourseModal: FC<ChangeCourseModalProps> = ({
   ) : null;
 };
 
-export default ChangeCourseModal;
+export default AddCourseModal;

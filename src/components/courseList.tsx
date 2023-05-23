@@ -7,19 +7,38 @@ import { Course } from "@/services/course/type";
 import { useGetUserRolesQuery } from "@/services/user/userApi";
 import { Button, List, ListItem, Typography } from "@material-tailwind/react";
 import { useRouter } from "next/router";
-import { FC } from "react";
+import { FC, useState } from "react";
+import AddCourseModal from "./courseModals/addCourse";
 
 type CourseListProps = {
+  groupId: string;
   groupName: string;
   data: Course[] | undefined;
 };
 
-const CourseList: FC<CourseListProps> = ({ groupName, data }) => {
+const CourseList: FC<CourseListProps> = ({ groupId, groupName, data }) => {
   const router = useRouter();
   const roles = useGetUserRolesQuery().data;
+  const [openAddCourse, setOpenAddCourse] = useState(false);
+  const handleOpenAddCourse = () => setOpenAddCourse(!openAddCourse);
+
   return (
     <>
-      {!!roles?.isAdmin && <Button className="mt-4">Создать курс</Button>}
+      <AddCourseModal
+        open={openAddCourse}
+        handleOpen={handleOpenAddCourse}
+        groupId={groupId}
+      />
+      {!!roles?.isAdmin && (
+        <Button
+          className="mt-4"
+          onClick={() => {
+            handleOpenAddCourse();
+          }}
+        >
+          Создать курс
+        </Button>
+      )}
       <Typography variant="h2" className="my-2">
         {groupName}
       </Typography>
